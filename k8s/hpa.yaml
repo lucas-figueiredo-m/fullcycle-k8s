@@ -1,0 +1,15 @@
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: goserver-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: goserver
+  minReplicas: 1 # NO MÍNIMO 2. Idealmente mais
+  maxReplicas: 30
+  targetCPUUtilizationPercentage: 25 # Depende bastante do tempo necessário pra levantar um pod. Em geral, 70-75 é um bom número
+
+# Teste de stress com Fortio
+# kubectl run -it fortio --rm --image=fortio/fortio -- load -qps 800 -t 120s -c 70 "http://goserver-service/healthz"
